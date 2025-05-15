@@ -1,75 +1,151 @@
 # Wallet API Shield
 
-A backend API for managing users and wallets using Express, TypeScript, and PostgreSQL.
+A RESTful backend API for managing user wallets using Node.js, Express, TypeScript, Prisma and PostgreSQL.
+
+This project was built as part of the Shield Technical Task and includes only the functionality explicitly required by the challenge.
+
+---
 
 ## Features
 
-- JWT authentication (Sign in / Sign out)
-- CRUD operations for user wallets
-- PostgreSQL integration
-- Basic error handling and validation
+- 🔐 JWT authentication (`/auth/signin`)
+- 📁 CRUD operations on wallets (`/wallets`)
+- 🧪 Input validation with Zod
+- 🔒 Password hashing with bcrypt
+- 🗂 Modular folder structure (controllers, routes, middlewares, models, utils)
+- 💾 PostgreSQL database with Prisma ORM
+
+---
 
 ## Requirements
 
 - Node.js >= 16
-- PostgreSQL
+- PostgreSQL >= 12
+- npm
 
-## Setup
+---
 
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/your-username/wallet-api-shield.git
-   cd wallet-api-shield
-   ```
+## Getting Started
 
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
+### 1. Clone the repository
 
-3. Create a PostgreSQL database and update your `.env` file:
-   ```
-   cp .env.example .env
-   ```
+```bash
+git clone https://github.com/JanaRoguin/wallet-api-shield.git
+cd wallet-api-shield
+```
 
-4. Run the SQL schema setup manually:
-   ```sql
-   CREATE DATABASE wallet_db;
+### 2. Install dependencies
 
-   CREATE EXTENSION IF NOT EXISTS "pgcrypto";
+```bash
+npm install
+```
 
-   CREATE TABLE users (
-     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-     email VARCHAR(255) UNIQUE NOT NULL,
-     password VARCHAR(255) NOT NULL
-   );
+### 3. Configure environment variables
 
-   CREATE TABLE wallets (
-     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-     user_id UUID REFERENCES users(id),
-     tag VARCHAR(255),
-     chain VARCHAR(255) NOT NULL,
-     address VARCHAR(255) UNIQUE NOT NULL
-   );
-   ```
+Create a `.env` file:
 
-5. Start the dev server:
-   ```bash
-   npm run dev
-   ```
+```bash
+cp .env.example .env
+```
+
+Then edit `.env` with your local DB credentials:
+
+```env
+PORT=3000
+DATABASE_URL=postgresql://jana_roguin:123@localhost:5432/jana_roguin
+JWT_SECRET=your_jwt_secret_here
+```
+
+> Ensure the database `jana_roguin` exists and is running.
+
+---
+
+### 4. Initialize the database
+
+Push the Prisma schema:
+
+```bash
+npx prisma db push
+```
+
+Seed the database with a test user:
+
+```bash
+npm run seed
+```
+
+This creates:
+
+```json
+{
+  "email": "user@example.com",
+  "password": "123456"
+}
+```
+
+---
+
+### 5. Start the development server
+
+```bash
+npm run dev
+```
+
+---
 
 ## API Endpoints
 
-- `POST /signin`
-- `POST /signout`
-- `GET /wallets`
-- `GET /wallets/:id`
-- `POST /wallets`
-- `PUT /wallets/:id`
-- `DELETE /wallets/:id`
+### Auth
+
+- `POST /auth/signin` → returns JWT token
+
+### Wallets (authenticated only)
+
+- `GET /wallets` → get all wallets of the user
+- `POST /wallets` → create a wallet
+- `PUT /wallets/:id` → update a wallet
+- `DELETE /wallets/:id` → delete a wallet
+
+Use the `Authorization: Bearer <token>` header after signing in.
+
+---
+
+## Project Structure
+
+```
+src/
+├── controllers/      # Logic for auth and wallet endpoints
+├── middlewares/      # JWT auth middleware
+├── models/           # Zod schemas for input validation
+├── routes/           # Express routes
+├── utils/            # Hashing and JWT helpers
+├── lib/              # Prisma client instance
+├── prisma/           # Prisma schema and seed script
+├── index.ts          # Entry point
+```
+
+---
 
 ## Postman Collection
 
-Import the `postman_collection.json` to test the endpoints.
+Import the file `wallet-api-shield.postman_collection.json` into Postman to test all endpoints.  
+It includes automatic token handling.
 
 ---
+
+## Notes
+
+- This project includes only the required functionality from the PDF specification.
+- No user registration (`signup`), logout, or token refresh implemented.
+- Passwords are hashed using bcrypt.
+- Tokens expire in 1 hour.
+
+---
+
+## License
+
+This code was developed as part of a technical challenge and is not intended for production use.
+
+## Author
+
+Developed by Jana Roguin as part of the Shield Technical Challenge.
