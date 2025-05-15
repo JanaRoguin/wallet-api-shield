@@ -8,7 +8,7 @@ This project was built as part of the Shield Technical Task and includes only th
 
 ## Features
 
-- 🔐 JWT authentication (`/auth/signin`)
+- 🔐 JWT authentication (`/auth/signin`,`/auth/signout`)
 - 📁 CRUD operations on wallets (`/wallets`)
 - 🧪 Input validation with Zod
 - 🔒 Password hashing with bcrypt
@@ -98,6 +98,7 @@ npm run dev
 ### Auth
 
 - `POST /auth/signin` → returns JWT token
+- `POST /auth/signout`→ logs out the user, delete the token
 
 ### Wallets (authenticated only)
 
@@ -129,14 +130,16 @@ src/
 ## Postman Collection
 
 Import the file `wallet-api-shield.postman_collection.json` into Postman to test all endpoints.  
-It includes automatic token handling.
+It includes automatic token handling, Full Wallet CRUD and 
+Auth (Sign In & Sign Out)
 
 ---
 
 ## Notes
 
 - This project includes only the required functionality from the PDF specification.
-- No user registration (`signup`), logout, or token refresh implemented.
+- Signout is implemented as a stateless endpoint: the server responds OK and the client deletes the token.
+- No user registration (`signup`), or token refresh implemented.
 - Passwords are hashed using bcrypt.
 - Tokens expire in 1 hour.
 

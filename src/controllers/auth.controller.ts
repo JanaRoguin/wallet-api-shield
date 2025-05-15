@@ -24,3 +24,8 @@ export const signin = async (req: Request, res: Response) => {
   return res.status(200).json({ token });
 };
 
+// ✅ Added signout endpoint to meet the requirement
+export const signout = async (req: Request, res: Response) => {
+  return res.status(200).json({ message: 'Signed out successfully' });
+};
+
