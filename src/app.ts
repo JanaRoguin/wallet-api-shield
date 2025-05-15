@@ -1,7 +1,7 @@
-import express from "express";
 import dotenv from "dotenv";
-import authRoutes from "./routes/authRoutes";
-import walletRoutes from "./routes/walletRoutes";
+import express from "express";
+import authRoutes from "./routes/auth.routes";
+import walletRoutes from "./routes/wallet.routes";
 
 dotenv.config();
 const app = express();
