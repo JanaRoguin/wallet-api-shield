@@ -9,31 +9,55 @@ export const getWallets = async (req: Request, res: Response) => {
 
 export const createWallet = async (req: Request, res: Response) => {
   const userId = (req as any).user.userId;
-  const { name, balance } = req.body;
+  const { name, balance, tag, chain, address } = req.body;
 
-  const wallet = await prisma.wallet.create({
-    data: {
-      name,
-      balance: balance ?? 0,
-      userId,
-    },
-  });
+  if (!chain || !address) {
+    return res.status(400).json({ error: 'chain and address are required' });
+  }
 
-  res.status(201).json(wallet);
+  try {
+    const wallet = await prisma.wallet.create({
+      data: {
+        name,
+        balance: balance ?? 0,
+        tag,
+        chain,
+        address,
+        userId,
+      },
+    });
+
+    res.status(201).json(wallet);
+  } catch (error: any) {
+    if (error.code === 'P2002') {
+      return res.status(409).json({ error: 'Address must be unique' });
+    }
+    res.status(500).json({ error: 'Internal server error' });
+  }
 };
 
 export const updateWallet = async (req: Request, res: Response) => {
   const userId = (req as any).user.userId;
   const walletId = parseInt(req.params.id);
-  const { name, balance } = req.body;
+  const { name, balance, tag, chain, address } = req.body;
 
-  const wallet = await prisma.wallet.updateMany({
-    where: { id: walletId, userId },
-    data: { name, balance },
-  });
+  try {
+    const wallet = await prisma.wallet.updateMany({
+      where: { id: walletId, userId },
+      data: { name, balance, tag, chain, address },
+    });
 
-  if (wallet.count === 0) return res.sendStatus(404);
-  res.sendStatus(204);
+    if (wallet.count === 0) {
+      return res.status(404).json({ error: 'Wallet not found' });
+    }
+
+    res.status(200).json({ message: 'Wallet updated successfully' });
+  } catch (error: any) {
+    if (error.code === 'P2002') {
+      return res.status(409).json({ error: 'Address must be unique' });
+    }
+    res.status(500).json({ error: 'Internal server error' });
+  }
 };
 
 export const deleteWallet = async (req: Request, res: Response) => {
@@ -44,6 +68,10 @@ export const deleteWallet = async (req: Request, res: Response) => {
     where: { id: walletId, userId },
   });
 
-  if (wallet.count === 0) return res.sendStatus(404);
-  res.sendStatus(204);
+  if (wallet.count === 0) {
+    return res.status(404).json({ error: 'Wallet not found' });
+  }
+
+  res.status(200).json({ message: 'Wallet deleted successfully' });
 };
+

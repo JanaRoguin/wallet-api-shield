@@ -7,7 +7,7 @@ dotenv.config();
 const app = express();
 app.use(express.json());
 
-app.use("/signin", authRoutes);
+app.use("/auth", authRoutes);
 app.use("/wallets", walletRoutes);
 
 export default app;
