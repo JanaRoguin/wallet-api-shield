@@ -12,7 +12,6 @@ This project was built as part of the Shield Technical Task and includes only th
 - 📁 CRUD operations on wallets (`/wallets`)
 - 💼 Wallet model extended with blockchain fields: `chain`, `address`, `tag`, etc.
 - 🧪 Input validation with Zod
-- 🧪 Input validation with Zod
 - 🔒 Password hashing with bcrypt
 - 🗂 Modular folder structure (controllers, routes, middlewares, models, utils)
 - 💾 PostgreSQL database with Prisma ORM
